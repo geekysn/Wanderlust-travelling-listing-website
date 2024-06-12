@@ -1,0 +1,184 @@
+<% layout("layouts/boilerplate") %>
+<!-- <h3>All Listings</h3> -->
+<!-- <a href="/listings/new">
+    <button>Create New Listing</button>
+</a> -->
+<style>
+    #filters-container {
+        display: flex;
+        align-items: center;
+        padding: 1rem 0;
+    }
+    #filters-wrapper {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        position: relative;
+        width: calc(100% - 300px); /* Adjust based on the width of the tax-toggle and buttons */
+    }
+    #filters {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        overflow-x: hidden; /* Hide the scrollbar */
+        max-width: 100%;
+    }
+    .filter {
+        text-align: center;
+        margin-right: 2rem;
+        margin-top: 1rem;
+        opacity: 0.7;
+        flex: 0 0 auto;
+    }
+    .filter:hover, .tax-toggle:hover {
+        opacity: 1;
+        cursor: pointer;
+    }
+    .filter p {
+        font-size: 0.8rem;
+    }
+    .tax-toggle {
+        flex: 0 0 250px; /* Adjust based on the required width of tax-toggle */
+        border: 1px solid black;
+        padding: 0.9rem;
+        height: 3.25rem;
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        opacity: 0.7;
+    }
+    .tax-info {
+        display: none;
+    }
+    .scroll-button {
+        border: none;
+        background-color: white;
+        cursor: pointer;
+        padding: 0.5rem;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+<div id="filters-container">
+    <button class="scroll-button" id="scroll-left"><i class="fa-solid fa-chevron-left"></i></button>
+    <div id="filters-wrapper">
+        <div id="filters">
+            <div class="filter">
+                <div><i class="fa-solid fa-fire"></i></div>
+                <p>Trending</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-solid fa-bed"></i></div>
+                <p>Rooms</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-solid fa-mountain-city"></i></div>
+                <p>Iconic Cities</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-solid fa-mountain"></i></div>
+                <p>Mountain</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-brands fa-fort-awesome"></i></div>
+                <p>Castles</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-solid fa-person-swimming"></i></div>
+                <p>Amazing Pools</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-solid fa-campground"></i></div>
+                <p>Camping</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-solid fa-cow"></i></div>
+                <p>Farms</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-regular fa-snowflake"></i></div>
+                <p>Arctic</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-solid fa-igloo"></i></div>
+                <p>Domes</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-solid fa-wine-bottle"></i></i></div>
+                <p>Vineyard</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-solid fa-person-skiing"></i></div>
+                <p>Skiing</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-solid fa-dumbbell"></i></div>
+                <p>Gym</p>
+            </div>
+            <div class="filter">
+                <div><i class="fa-solid fa-bell-concierge"></i></div>
+                <p>Luxe</p>
+            </div>
+            <!-- Additional filters can be added here -->
+        </div>
+    </div>
+    <button class="scroll-button" id="scroll-right"><i class="fa-solid fa-chevron-right"></i></button>
+    <div class="tax-toggle">
+        <div class="form-check-reverse form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+            <label class="form-check-label" for="flexSwitchCheckDefault">Display total after taxes</label>
+        </div>
+    </div>
+</div>
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+    <% for (let listing of allListings) { %>
+        <a href="/listings/<%= listing._id %>" class="listing-link">
+            <div class="card col listing-card">
+                <img src="<%= listing.image.url %>" class="card-img-top" alt="<%= listing.image.filename %>" style="height: 20rem;">
+                <div class="card-img-overlay"></div>
+                <div class="card-body">
+                    <h5 class="card-title"><%= listing.title %></h5>
+                    <p class="card-text">
+                        <strong>Price:</strong> &#8377; 
+                        <% if (listing.price) { %>
+                            <%= listing.price.toLocaleString("en-IN") %> / night
+                            <i class="tax-info"> &nbsp;  &nbsp;+18% GST</i>
+                        <% } else { %>
+                            Not Available
+                        <% } %>
+                    </p> 
+                </div>
+            </div>
+        </a>
+    <% } %>
+</div>
+<script>
+    let taxToggle = document.querySelector("#flexSwitchCheckDefault");
+    taxToggle.addEventListener("click",()=>{
+        let gst = document.getElementsByClassName("tax-info");
+        for(let tax of gst){
+            if(tax.style.display != "inline") tax.style.display = "inline";
+            else tax.style.display = "none"; 
+        }
+    });
+
+    const filters = document.getElementById('filters');
+    const scrollLeftBtn = document.getElementById('scroll-left');
+    const scrollRightBtn = document.getElementById('scroll-right');
+
+    scrollLeftBtn.addEventListener('click', () => {
+        filters.scrollBy({
+            left: -200, // Adjust the value as needed
+            behavior: 'smooth'
+        });
+    });
+
+    scrollRightBtn.addEventListener('click', () => {
+        filters.scrollBy({
+            left: 200, // Adjust the value as needed
+            behavior: 'smooth'
+        });
+    });
+</script>
